@@ -20,6 +20,12 @@ pipeline {
             }
         }
 
+        stage ('Create Docker Image') {
+            steps {
+                sh 'docker build . -t timeoff:latest'
+            }
+        }
+
     }
 }
 
