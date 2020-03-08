@@ -9,9 +9,6 @@ pipeline {
         nodeVersion = "Node 10.19.0"
     }
 
-    triggers {
-    }
-
     stages {
 
         stage ('Unit Test') {
