@@ -1,0 +1,30 @@
+pipeline {
+    agent any
+
+    tools {
+        nodejs "Node 10.19.0"
+    }
+
+    environment {
+        nodeVersion = "Node 10.19.0"
+    }
+
+    triggers {
+    }
+
+    stages {
+
+        stage ('Unit Test') {
+            steps {
+                nodejs(nodeJSInstallationName: "${nodeVersion}") {
+                    env.PATH="${env.NODEJS_HOME}/bin:${env.PATH}"
+                    sh 'USE_CHROME=1 npm test'
+                }
+            }
+        }
+
+    }
+}
+
+
+
