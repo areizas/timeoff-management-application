@@ -28,7 +28,7 @@ pipeline {
 
         stage ('Create ACR on Azure') {
             steps {
-                dir("infrastructure/azure-container-registry"){
+                dir("devops/infrastructure/azure-container-registry"){
                     withCredentials([string(credentialsId: 'az-storage-account-key', variable: 'ACCESS_KEY')]) { //set SECRET with the credential content
                         sh """sed -i "s|#{ACCESS_KEY}#|${ACCESS_KEY}|g" 00-backend.tf"""
                     }
