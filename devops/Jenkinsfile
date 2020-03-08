@@ -15,7 +15,7 @@ pipeline {
             steps {
                 nodejs(nodeJSInstallationName: "${nodeVersion}") {
                     sh 'npm install'
-                    sh 'USE_CHROME=1 npm test'
+                    sh 'USE_CHROME=1 npm run ci-test'
                 }
             }
         }
