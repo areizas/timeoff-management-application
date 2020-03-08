@@ -32,9 +32,7 @@ RUN adduser --system app --home /app
 WORKDIR /app/timeoff-management
 COPY package*.json ./
 RUN npm install
-COPY . .
-
-RUN npm install
 RUN npm install sqlite3
+COPY . .
 
 CMD npm start

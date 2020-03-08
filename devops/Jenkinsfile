@@ -44,6 +44,18 @@ pipeline {
             }
         }
 
+        stage ('Push Docker Images to Azure ACR') {
+            steps {
+                withCredentials([azureServicePrincipal('azcliMateoKey')]){
+                    sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
+                    sh 'az acr login --name acrareizas'
+                    sh 'docker tag timeoff:latest acrareizas.azurecr.io/timeoff:latest'
+                    sh 'docker push acrareizas.azurecr.io/timeoff:latest'
+                } 
+
+            }
+        }
+
     }
 }
 
