@@ -96,6 +96,17 @@ pipeline {
         //     }
         // }
 
+        stage ('Promote Image') {
+            steps {
+                withCredentials([azureServicePrincipal('az-areizas')]){
+                    sh 'az acr login --name acrareizas'
+                    sh 'docker tag acrareizas.azurecr.io/timeoff:latest acrareizas.azurecr.io/timeoff:candidate'
+                    sh 'docker push acrareizas.azurecr.io/timeoff:candidate'
+                } 
+
+            }
+        }
+
         stage('Delete Infrastructure?') {
             steps {
                 script{
