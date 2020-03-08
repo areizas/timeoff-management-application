@@ -30,6 +30,8 @@ RUN apk add --no-cache \
     
 RUN adduser --system app --home /app
 WORKDIR /app/timeoff-management
+COPY package*.json ./
+RUN npm install
 COPY . .
 
 RUN npm install
