@@ -10,3 +10,4 @@ app.get('db_model').sequelize.sync().then(function () {
     debug('Express server listening on port ' + server.address().port);
   });
 });
+module.exports = app
