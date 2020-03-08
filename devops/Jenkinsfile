@@ -87,14 +87,14 @@ pipeline {
             }
         }
 
-        stage ('Run Acceptance tests') {
-            steps {
-                nodejs(nodeJSInstallationName: "${nodeVersion}") {
-                    sh 'npm install'
-                    sh "USE_CHROME=1 URL=http://${serviceName}.eastus.cloudapp.azure.com npm test"
-                }
-            }
-        }
+        // stage ('Run Acceptance tests') {
+        //     steps {
+        //         nodejs(nodeJSInstallationName: "${nodeVersion}") {
+        //             sh 'npm install'
+        //             sh "USE_CHROME=1 URL=http://${serviceName}.eastus.cloudapp.azure.com npm test"
+        //         }
+        //     }
+        // }
 
         stage('Delete Infrastructure?') {
             steps {
