@@ -80,7 +80,7 @@ pipeline {
                     sh 'az aks get-credentials --resource-group timeoff-management --name timeoff-cluster --overwrite-existing'
                     sh 'kubectl apply -f timeoff-deployment.yaml'
                     sh 'kubectl set image deployment/timeoff timeoff=acrareizas.azurecr.io/timeoff:latest'
-                    sh 'bash ./createDNS.sh timeoff-app'
+                    sh 'bash ./createDNS.sh timeoff'
                 }
 
             }
