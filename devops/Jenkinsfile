@@ -12,14 +12,14 @@ pipeline {
 
     stages {
 
-        // stage ('Unit Test') {
-        //     steps {
-        //         nodejs(nodeJSInstallationName: "${nodeVersion}") {
-        //             sh 'npm install'
-        //             sh 'USE_CHROME=1 npm run ci-test'
-        //         }
-        //     }
-        // }
+        stage ('Unit Test') {
+            steps {
+                nodejs(nodeJSInstallationName: "${nodeVersion}") {
+                    sh 'npm install'
+                    sh 'USE_CHROME=1 npm run ci-test'
+                }
+            }
+        }
 
         stage ('Create Docker Image') {
             steps {
@@ -87,14 +87,14 @@ pipeline {
             }
         }
 
-        // stage ('Run Acceptance tests') {
-        //     steps {
-        //         nodejs(nodeJSInstallationName: "${nodeVersion}") {
-        //             sh 'npm install'
-        //             sh "USE_CHROME=1 URL=http://${serviceName}.eastus.cloudapp.azure.com npm test"
-        //         }
-        //     }
-        // }
+        stage ('Run Acceptance tests') {
+            steps {
+                nodejs(nodeJSInstallationName: "${nodeVersion}") {
+                    sh 'npm install'
+                    sh "USE_CHROME=1 URL=http://${serviceName}.eastus.cloudapp.azure.com npm test"
+                }
+            }
+        }
 
         stage ('Promote Image') {
             steps {
