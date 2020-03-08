@@ -1,0 +1,36 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: timeoff
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: timeoff
+    spec:
+      containers:
+      - name: timeoff
+        image: acrareizas.azurecr.io/timeoff:latest
+        imagePullPolicy: "Always"
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            cpu: 150m
+          limits:
+            cpu: 300m
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: timeoff
+spec:
+  type: LoadBalancer
+  ports:
+  - name: app
+    port: 3000
+    targetPort: 3000
+  selector:
+    app: timeoff
