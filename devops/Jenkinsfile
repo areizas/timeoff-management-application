@@ -7,6 +7,7 @@ pipeline {
 
     environment {
         nodeVersion = "Node 10.19.0"
+        serviceName = "timeoff"
     }
 
     stages {
@@ -80,9 +81,45 @@ pipeline {
                     sh 'az aks get-credentials --resource-group timeoff-management --name timeoff-cluster --overwrite-existing'
                     sh 'kubectl apply -f timeoff-deployment.yaml'
                     sh 'kubectl set image deployment/timeoff timeoff=acrareizas.azurecr.io/timeoff:latest'
-                    sh 'bash ./createDNS.sh timeoff'
+                    sh "bash ./createDNS.sh ${serviceName}"
                 }
 
+            }
+        }
+
+        stage ('Run Acceptance tests') {
+            steps {
+                nodejs(nodeJSInstallationName: "${nodeVersion}") {
+                    sh 'npm install'
+                    sh "USE_CHROME=1 URL=http://${serviceName}.eastus.cloudapp.azure.com npm test"
+                }
+            }
+        }
+
+        stage('Delete Infrastructure?') {
+            steps {
+                script{
+                    timeout(120) {
+                        input message:'Approve destroy infrastructure?', submitter: 'it-ops'
+                        infrastrutureDirectories = ['devops/infrastructure/azure-container-registry','devops/infrastructure/azure-kubernetes-service']
+                        infrastrutureDirectories.each{
+                            dir("${it}"){
+                                withCredentials([string(credentialsId: 'az-storage-account-key', variable: 'ACCESS_KEY')]) { //set SECRET with the credential content
+                                    sh """sed -i "s|#{ACCESS_KEY}#|${ACCESS_KEY}|g" 00-backend.tf"""
+                                }
+                                withCredentials([azureServicePrincipal('az-areizas')]){
+                                    sh """sed -i "s|#{AZURE_SUBSCRIPTION_ID}#|${AZURE_SUBSCRIPTION_ID}|g" 01-dev.auto.tfvars"""
+                                    sh """sed -i "s|#{AZURE_CLIENT_ID}#|${AZURE_CLIENT_ID}|g" 01-dev.auto.tfvars"""
+                                    sh """sed -i "s|#{AZURE_CLIENT_SECRET}#|${AZURE_CLIENT_SECRET}|g" 01-dev.auto.tfvars"""
+                                    sh """sed -i "s|#{AZURE_TENANT_ID}#|${AZURE_TENANT_ID}|g" 01-dev.auto.tfvars"""
+                                }
+                                sh 'terraform init'
+                                sh 'terraform destroy -auto-approve'
+                            }
+                        }
+                    }
+                    echo "Destroyed!"
+                }
             }
         }
 
