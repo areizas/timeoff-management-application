@@ -26,6 +26,26 @@ pipeline {
             }
         }
 
+        stage ('Create ACR on Azure') {
+            steps {
+                dir("infrastructure/azure-container-registry"){
+                    withCredentials([string(credentialsId: 'az-storage-account-key', variable: 'ACCESS_KEY')]) { //set SECRET with the credential content
+                        sh """sed -i "s|#{ACCESS_KEY}#|${ACCESS_KEY}|g" 00-backend.tf"""
+                    }
+                    withCredentials([azureServicePrincipal('az-areizas')]){
+                        sh """sed -i "s|#{AZURE_SUBSCRIPTION_ID}#|${AZURE_CLIENT_ID}|g" 01-dev.auto.tfvars"""
+                        sh """sed -i "s|#{AZURE_CLIENT_ID}#|${AZURE_CLIENT_ID}|g" 01-dev.auto.tfvars"""
+                        sh """sed -i "s|#{AZURE_CLIENT_SECRET}#|${AZURE_CLIENT_SECRET}|g" 01-dev.auto.tfvars"""
+                        sh """sed -i "s|#{AZURE_TENANT_ID}#|${AZURE_TENANT_ID}|g" 01-dev.auto.tfvars"""
+                    }
+                    sh "terraform init"
+                    sh "terraform apply -auto-approve"
+                }
+                
+                sh 'docker build . -t timeoff:latest'
+            }
+        }
+
     }
 }
 
