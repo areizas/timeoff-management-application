@@ -29,11 +29,10 @@ RUN apk add --no-cache \
     vim
     
 RUN adduser --system app --home /app
-USER app
-WORKDIR /app
-RUN git clone https://github.com/timeoff-management/application.git timeoff-management
 WORKDIR /app/timeoff-management
+COPY . .
 
 RUN npm install
+RUN npm install sqlite3
 
 CMD npm start
