@@ -12,15 +12,15 @@ pipeline {
 
     stages {
 
-        stage ('Unit Test') {
-            steps {
-                nodejs(nodeJSInstallationName: "${nodeVersion}") {
-                    sh 'npm install'
-                    sh 'rm -rf *.sqlite'
-                    sh 'USE_CHROME=1 npm run ci-test'
-                }
-            }
-        }
+        // stage ('Unit Test') {
+        //     steps {
+        //         nodejs(nodeJSInstallationName: "${nodeVersion}") {
+        //             sh 'npm install'
+        //             sh 'rm -rf *.sqlite'
+        //             sh 'USE_CHROME=1 npm run ci-test'
+        //         }
+        //     }
+        // }
 
         stage ('Create Docker Image') {
             steps {
